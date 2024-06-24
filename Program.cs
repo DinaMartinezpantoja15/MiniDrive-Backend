@@ -1,9 +1,19 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.EntityFrameworkCore;
+using MiniDrive_Backend.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+builder.Services.AddDbContext<BaseContext>(options =>
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("MySqlConnection"),
+       ServerVersion.Parse("8.0.20-mysql")));
 
 var app = builder.Build();
 
@@ -23,7 +33,7 @@ var summaries = new[]
 
 app.MapGet("/weatherforecast", () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
+    var forecast = Enumerable.Range(1, 5).Select(index =>
         new WeatherForecast
         (
             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
